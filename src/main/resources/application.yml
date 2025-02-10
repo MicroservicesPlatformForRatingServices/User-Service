@@ -1,0 +1,55 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/users
+    username: root
+    password: bruno
+    driverClassName: com.mysql.cj.jdbc.Driver  #picks automatically if not mentioned, used to register driver with DriverManager
+
+  jpa:
+    hibernate:
+      ddl-auto: update  #it will not create schema everytime application is started, if not present initially then keep it to create so that hibernate can create the schema
+    show-sql: true
+
+  application:
+    name: USER-SERVICE
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8766/eureka
+  instance:
+    prefer-ip-address: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingHotelBreaker:
+        slidingWindowSize: 6
+        failureRateThreshold: 50
+        waitDurationInOpenState: 55s
+        minimumNumberOfCalls: 2
+        permittedNumberOfCallsInHalfOpenState: 2
+        registerHealthIndicator: true
+        recordException:
+          - java.lang.Exception
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+
+
+
+
+
